@@ -22,7 +22,6 @@
 
 
 target_archive_file=${1:-kfp.tar.gz}
-ls -l "$target_archive_file"
 
 pushd "$(dirname "$0")"
 dist_dir=$(mktemp -d)

@@ -27,7 +27,7 @@ import pprint
 
 
 @pipeline.command()
-@click.option("-p", "--pipeline-name", help="Name of the pipeline -andy")
+@click.option("-p", "--pipeline-name", help="Name of the pipeline")
 @click.option(
     "-v", "--pipeline-version", help="Name of the pipeline version", default="v1"
 )

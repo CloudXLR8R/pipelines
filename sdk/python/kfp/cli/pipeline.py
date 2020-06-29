@@ -41,12 +41,8 @@ def upload(ctx, pipeline_name, package_file, pipeline_version="v1"):
     # check if pipeline exists already
     response = client.list_pipelines(page_size=100, sort_by="created_at desc")
     if len(response.pipelines) > 0:
-
         latest_pipeline = filter_pipeline(response.pipelines, pipeline_name)
-        pprint.pprint("latest_pipeline:")
-        pprint.pprint(latest_pipeline)
         if latest_pipeline is not None:
-            pprint.pprint("latest_pipeline is not none:")
             version = client.pipeline_uploads.upload_pipeline_version(
                 package_file, name=pipeline_version, pipelineid=latest_pipeline.id,
             )
@@ -70,9 +66,6 @@ def upload(ctx, pipeline_name, package_file, pipeline_version="v1"):
 
 def filter_pipeline(pipelines, name):
     for pipeline in pipelines:
-        pprint.pprint("pipeline.name:")
-        pprint.pprint(pipeline.name)
-        # pprint.pprint(pipeline.default_version)
         if pipeline.name == name:
             return pipeline
 

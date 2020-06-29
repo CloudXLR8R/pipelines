@@ -28,10 +28,12 @@ import pprint
 
 @pipeline.command()
 @click.option("-p", "--pipeline-name", help="Name of the pipeline -andy")
-@click.option("-v", "--pipeline-version", help="Name of the pipeline version")
+@click.option(
+    "-v", "--pipeline-version", help="Name of the pipeline version", default="v1"
+)
 @click.argument("package-file")
 @click.pass_context
-def upload(ctx, pipeline_name, package_file, pipeline_version="v1"):
+def upload(ctx, pipeline_name, package_file, pipeline_version):
     """Upload a KFP pipeline"""
     client = ctx.obj["client"]
 

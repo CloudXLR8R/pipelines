@@ -61,15 +61,15 @@ def upload(ctx, pipeline_name, package_file, pipeline_version):
     else:
         logging.info("No prev pipelines found..creating new one")
 
-    pipeline = client.upload_pipeline(package_file, pipeline_name)
-    logging.info("Pipeline {} has been submitted\n".format(pipeline.id))
-    _display_pipeline(pipeline)
+    new_pipeline = client.upload_pipeline(package_file, pipeline_name)
+    logging.info("Pipeline {} has been submitted\n".format(new_pipeline.id))
+    _display_pipeline(new_pipeline)
 
 
 def filter_pipeline(pipelines, name):
-    for pipeline in pipelines:
-        if pipeline.name == name:
-            return pipeline
+    for p in pipelines:
+        if p.name == name:
+            return p
 
 
 @pipeline.command()

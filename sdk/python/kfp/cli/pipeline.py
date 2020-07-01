@@ -23,9 +23,6 @@ def pipeline():
     pass
 
 
-import pprint
-
-
 @pipeline.command()
 @click.option("-p", "--pipeline-name", help="Name of the pipeline")
 @click.option(
@@ -40,30 +37,25 @@ def upload(ctx, pipeline_name, package_file, pipeline_version):
     if not pipeline_name:
         pipeline_name = package_file.split(".")[0]
 
-    # check if pipeline exists already
-    response = client.list_pipelines(page_size=100, sort_by="created_at desc")
-    if len(response.pipelines) > 0:
-        latest_pipeline = filter_pipeline(response.pipelines, pipeline_name)
-        if latest_pipeline is not None:
-            version = client.pipeline_uploads.upload_pipeline_version(
-                package_file, name=pipeline_version, pipelineid=latest_pipeline.id,
-            )
-            logging.info(
-                "The {} version of the pipeline {} has been submitted\n".format(
-                    pipeline_version, latest_pipeline.id
-                )
-            )
-            _display_pipeline_version(version)
-            return
-        else:
-            logging.info("Could not find pipeline amongst prev ones")
-
-    else:
-        logging.info("No prev pipelines found..creating new one")
+    pipeline_id = get_latest_pipeline_id(client, pipeline_name)
+    if pipeline_id is not None:
+        client.pipeline_uploads.upload_pipeline_version(
+            package_file, name=pipeline_version, pipelineid=pipeline_id,
+        )
+        _display_pipeline_version(pipeline_version)
+        return
 
     new_pipeline = client.upload_pipeline(package_file, pipeline_name)
     logging.info("Pipeline {} has been submitted\n".format(new_pipeline.id))
     _display_pipeline(new_pipeline)
+
+
+def get_latest_pipeline_id(client, pipeline_name):
+    response = client.list_pipelines(page_size=100, sort_by="created_at desc")
+    if len(response.pipelines) > 0:
+        latest_pipeline = filter_pipeline(response.pipelines, pipeline_name)
+        if latest_pipeline is not None:
+            return latest_pipeline.id
 
 
 def filter_pipeline(pipelines, name):
